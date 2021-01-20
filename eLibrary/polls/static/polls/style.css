@@ -1,0 +1,44 @@
+
+.main-df{
+    background-image: url('./images/main_books.jpg');
+    background-size: cover;
+    height: 300px;
+}
+
+.signup-df::after{
+    background-image: url('./images/main_books.jpg');
+    background-size: cover;
+    opacity: 0.5;
+    position: absolute;
+
+}
+
+.input-forms{
+    width: 300px;
+    margin-top: 15px;
+    margin-left: 315px;
+
+}
+
+.log-img-forms{
+    background-image: url('./images/main_books.jpg');
+    background-size: cover;
+    grid-template-columns: auto;
+}
+
+.log-info-print{
+    text-align: center;
+    font-size: 15px;
+    color: lightcoral;
+}
+
+.log-main-print{
+    text-align: center;
+    font-size: 50;
+}
+
+.log-input-place{
+    width: 40%;
+    margin-left: 60%;
+}
+
