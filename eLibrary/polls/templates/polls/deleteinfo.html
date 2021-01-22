@@ -14,24 +14,33 @@
 
     <script>
         function submitReqDelete() {
+            let email = "{{email}}";
+            let firstname = "{{firstname}}";
             let form = document.getElementById('forms');
+            form.setAttribute('action', './reqdelete');
+            form.setAttribute('method', 'post');
 
-            form.setAttribute('method', 'POST');
-            form.setAttribute('action', './requpdate')
-            hiddenField = document.createElement('input');
+            let hiddenField = document.createElement('input');
             hiddenField.setAttribute('type', 'hidden');
             hiddenField.setAttribute('name', 'email');
-            hiddenField.setAttribute('value', "{{email}}");
+            hiddenField.setAttribute('value', email);
+            form.appendChild(hiddenField);
+
+            hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute('name', 'firstname');
+            hiddenField.setAttribute('value', firstname);
             form.appendChild(hiddenField);
             form.submit();
-
         }
 
-        function submitDeleteInfo() {
-
+        function submitIndex() {
+            let form = document.getElementById('forms');
+            form.setAttribute('action', './');
+            form.setAttribute('method', 'get');
+            form.submit();
         }
     </script>
-
 </head>
 
 <body class="bg-light">
@@ -46,8 +55,16 @@
                     </div>
 
                     <div style="float: right;">
-                        <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{email}})</span>
-                        <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
+                        <form method="post"> {% csrf_token %}
+                            {% if stat != '1' %}
+                            <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{email}})</span>
+                            <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
+
+                            {% else %}
+                            <button type="submit" formaction="./login" class="btn btn-success">로그인</button>
+                            <button type="submit" formaction="./signup" class="btn btn-success">회원가입</button>
+                            {% endif %}
+                        </form>
                     </div>
             </nav>
 
@@ -56,48 +73,43 @@
                     <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
 
                         <div style="margin-top: 80px; ">
+                            {% if stat != '1' %}
                             <span style="font-size: 50px;">{{firstname}}님의 회원정보</span>
+                            {% endif %}
                         </div>
 
-                        <div>
-                            <div style="margin-top: 5%;">
-                                <label for="firstName" class="form-label">First name</label>
-                                <input type="text" class="form-control" id="firstname" name='firstname' placeholder=""
-                                    value="" required style="width: 30%;">
-                            </div>
+                        <div style="margin-top: 1%;">
+                            {% if stat == '0' %}
+                            <label for="password" class="form-label">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
+                            {% elif stat == '2' %}
+                            <label for="password" style="color: red;" class="form-label">{{msg}}</label>
+                            {% endif %}
 
-                            <div style="margin-top: 1%;">
-                                <label for="lastName" class="form-label">Last name</label>
-                                <input type="text" class="form-control" id="lastName" name='lastname' placeholder=""
-                                    value="" required style="width: 30%;">
+                            {% if stat != '1' %}
+                            <input type="password" class="form-control" id="password" name='password' placeholder=""
+                                value="" required style="width: 30%;">
+                            {% else %}
+                            <div>
+                                <span style="font-size: 50px; text-align: center;">{{firstname}}님의 회원탈퇴를 완료하였습니다.</span>
+                                <br/>
+                                <br/>
+                                <span style="font-size: 30px; text-align: center;">그 동안 전자도서관 서비스를 이용해주셔서 감사합니다.</span>
                             </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name='password' placeholder=""
-                                    value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="password" class="form-label">Check password</label>
-                                <input type="password" class="form-control" id="cpassword" name='cpassword'
-                                    placeholder="" value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" name='address'
-                                    placeholder="1234 Main St" required style="width: 60%;">
-                            </div>
+                            {% endif %}
                         </div>
 
+                        {% if stat != '1' %}
+                        <button type='submit' class="w-100 btn btn-primary btn-lg"
+                            style="margin-top: 8%; margin-left: 25%;" onclick="submitReqDelete()">탈퇴하기</button>
+
+                        {% else %}
                         <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
-                            onclick="submitReqUpdate()">수정하기</button>
+                            onclick="submitIndex()"> 돌아가기</button>
+                        {% endif %}
                     </form>
                 </div>
             </div>
         </main>
-
     </div>
 </body>
 

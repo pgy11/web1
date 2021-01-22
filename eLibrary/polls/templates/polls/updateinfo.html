@@ -14,21 +14,50 @@
 
     <script>
         function submitReqUpdate() {
-            let form = document.getElementById('forms');
+            let pw = document.getElementById('password');
+            let cpw = document.getElementById('cpassword');
 
-            form.setAttribute('method', 'POST');
-            form.setAttribute('action', './requpdate')
-            hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute('name', 'email');
-            hiddenField.setAttribute('value', "{{email}}");
-            form.appendChild(hiddenField);
-            form.submit();
+            if (pw.value == cpw.value) {
+                let form = document.getElementById('forms');
+                form.setAttribute('method', 'POST');
+                form.setAttribute('action', './requpdate')
+
+                hiddenField = document.createElement('input');
+                hiddenField.setAttribute('type', 'hidden');
+                hiddenField.setAttribute('name', 'email');
+                hiddenField.setAttribute('value', "{{email}}");
+                form.appendChild(hiddenField);
+                form.submit();
+                alert('회원정보 수정완료 하였습니다.');
+            }
+            else{
+                alert('비밀번호가 일치하지 않습니다.');
+            }
 
         }
 
         function submitDeleteInfo() {
+            let email = "{{email}}";
+            let firstname = "{{firstname}}";
 
+            let form = document.createElement('form');
+            form.setAttribute('method', 'GET{% csrf_token %}');
+            form.setAttribute('action', './deleteinfo');
+
+            let hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute("name", "email");
+            hiddenField.setAttribute("value", email);
+            form.appendChild(hiddenField);
+
+            hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute("name", "firstname");
+            hiddenField.setAttribute("value", firstname);
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 
@@ -47,7 +76,7 @@
 
                     <div style="float: right;">
                         <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{email}})</span>
-                        <button type='submit' formaction="./signout" class='btn btn-success'>회원탈퇴</button>
+                        <button onclick="submitDeleteInfo()" class='btn btn-success'>회원탈퇴</button>
                     </div>
             </nav>
 
@@ -56,20 +85,20 @@
                     <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
 
                         <div style="margin-top: 80px; ">
-                            <span style="font-size: 50px;">{{firstname}}님의 회원정보</span>
+                            <span style="font-size: 50px;">{{firstname}}님의 회원정보 수정</span>
                         </div>
 
                         <div>
                             <div style="margin-top: 5%;">
                                 <label for="firstName" class="form-label">First name</label>
-                                <input type="text" class="form-control" id="firstname" name='firstname' placeholder=""
-                                    value="" required style="width: 30%;">
+                                <input type="text" class="form-control" id="firstname" name='firstname'
+                                    placeholder="{{firstname}}" value="" required style="width: 30%;">
                             </div>
 
                             <div style="margin-top: 1%;">
                                 <label for="lastName" class="form-label">Last name</label>
-                                <input type="text" class="form-control" id="lastName" name='lastname' placeholder=""
-                                    value="" required style="width: 30%;">
+                                <input type="text" class="form-control" id="lastName" name='lastname'
+                                    placeholder="{{lastname}}" value="" required style="width: 30%;">
                             </div>
 
                             <div style="margin-top: 1%;">
@@ -87,7 +116,7 @@
                             <div style="margin-top: 1%;">
                                 <label for="address" class="form-label">Address</label>
                                 <input type="text" class="form-control" id="address" name='address'
-                                    placeholder="1234 Main St" required style="width: 60%;">
+                                    placeholder="{{address}}" required style="width: 60%;">
                             </div>
                         </div>
 
