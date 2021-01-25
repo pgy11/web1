@@ -1,133 +1,81 @@
-<!doctype html>
-<html lang="en">
+{% extends './base.html' %}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>전자도서관 회원가입</title>
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+{% block content %}
+<div class='container-fluid'>
+  <main>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+          <span class='navbar-brand'>회원가입</span>
+        </div>
+    </nav>
 
-  {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+    <div class='row'>
+      <div>
+        <form class="needs-validation" id='forms' novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
 
-  <script>
-    function submitReqMember(){
-      let mesg = "{{msg}}";
-      let pw = document.getElementById('password');
-      let cpw = document.getElementById('cpassword');
-      let email = document.getElementById('mail');
-      let phone = document.getElementById('phonein');
-      let firstName = document.getElementById('firstn');
-      let lastName = document.getElementById('lastn');
-      let address = document.getElementById('address');
-      
-      if(firstName.value == '' || lastName.value == '') alert('이름을 입력해주세요.');
-      else if(email.value == '') alert('이메일을 입력해주세요.');
-      else if(phone.value == '') alert('핸드폰 번호를 입력하세요.');
-      else if(phone.value.indexOf('-') != -1) alert('-없이 핸드폰번호를 입력하세요.');
-      else if(isNaN(phone.value)) alert('핸드폰 번호에 숫자를 입력하세요');
-      else if(pw.value == '') alert('비밀번호를 입력해주세요.');
-      else if(pw.value != cpw.value) alert('비밀번호가 일치하지 않습니다.');
-      else if(address.value == '') alert('주소를 입력해주세요.');
-      //else if(mesg != 'available') alert('이메일 중복 확인하세요.');
-      else{
-        alert('회원가입이 완료됐습니다.')
-        let forms = document.getElementById('forms');
-        forms.setAttribute('method', 'post');
-        forms.setAttribute('action', './reqmember');
-        forms.submit();
-      }
-    }
-
-    function checkMail(){
-      let form = document.getElementById('forms');
-      form.setAttribute('method', 'post');
-      form.setAttribute('action', './checkmail');
-      form.submit();
-    }
-  </script>
-
-</head>
-
-<body class="bg-light">
-
-  <div class='container-fluid'>
-    <main>
-      <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
-            <span class='navbar-brand'>회원가입</span>
-          </div>
-        </nav>
-
-      <div class= 'row'>
-        <div>
-          <form class="needs-validation" id='forms' novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
-
-            <div style="margin-top: 80px; ">
+          <div style="margin-top: 80px; ">
             <span style="font-size: 50px;">회원가입</span>
+          </div>
+
+          <div>
+            <div style="margin-top: 5%;">
+              <label for="firstName" id='firstname' class="form-label">First name</label>
+              <input type="text" class="form-control" id="firstn" name='firstname' placeholder="" required="required"
+                style="width: 30%;" />
             </div>
 
-            <div>
-              <div style="margin-top: 5%;">
-                <label for="firstName" id='firstname' class="form-label">First name</label>
-                <input type="text" class="form-control" id="firstn" name='firstname' placeholder=""
-                 required="required" style="width: 30%;" />
-              </div>
+            <div style="margin-top: 1%;">
+              <label for="lastName" id='lastname' class="form-label">Last name</label>
+              <input type="text" class="form-control" id="lastn" name='lastname' placeholder="" required
+                style="width: 30%;" />
+            </div>
 
-              <div style="margin-top: 1%;">
-                <label for="lastName" id='lastname' class="form-label">Last name</label>
-                <input type="text" class="form-control" id="lastn" name='lastname' placeholder="" required
-                  style="width: 30%;" />
-              </div>
-
-              <div style="margin-top: 1%;">
-                <label for="email" id='email' class="form-label" style="display: block;">E-mail</label>
-                <input type="email" class="form-control" id="mail" placeholder="e-mail" name ='email' value="" style="width: 30%; display: inline;" 
-                required />
-                <!--
+            <div style="margin-top: 1%;">
+              <label for="email" id='email' class="form-label" style="display: block;">E-mail</label>
+              <input type="email" class="form-control" id="mail" placeholder="e-mail" name='email' value=""
+                style="width: 30%; display: inline;" required />
+              <!--
                 <button class="btn btn-success" style="margin-left: 2%;" onclick="checkMail()">중복확인</button>
                 <span>{{msg}}</span>
                 -->
-              </div>
-
-              <div style="margin-top: 1%;">
-                <label for="phonelabel" id='phonelabel' class="form-label">Phone number</label>
-                <input type="text" class="form-control" id="phonein" name='phonein' placeholder="-없이 입력" required="required"
-                  style="width: 30%;" />
-              </div>
-
-              <div style="margin-top: 1%;">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name='password' placeholder="" required
-                  style="width: 30%;" />
-              </div>
-
-              <div style="margin-top: 1%;">
-                <label for="password" class="form-label">Password again</label>
-                <input type="password" class="form-control" id="cpassword" name='cpassword' placeholder="" required
-                  style="width: 30%;" />
-              </div>
-
-              <div style="margin-top: 1%;">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" name='address' placeholder="1234 Main St" required
-                  style="width: 40%;"/>
-              </div>
             </div>
 
-            <button class="w-100 btn btn-primary btn-lg" 
-            style="margin-top: 8%; margin-left: 25%;" onclick="submitReqMember()">가입하기</button>
-          </form>
+            <div style="margin-top: 1%;">
+              <label for="phonelabel" id='phonelabel' class="form-label">Phone number</label>
+              <input type="text" class="form-control" id="phonein" name='phonein' placeholder="-없이 입력"
+                required="required" style="width: 30%;" />
+            </div>
 
-        </div>
+            <div style="margin-top: 1%;">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name='password' placeholder="" required
+                style="width: 30%;" />
+            </div>
+
+            <div style="margin-top: 1%;">
+              <label for="password" class="form-label">Password again</label>
+              <input type="password" class="form-control" id="cpassword" name='cpassword' placeholder="" required
+                style="width: 30%;" />
+            </div>
+
+            <div style="margin-top: 1%;">
+              <label for="address" class="form-label">Address</label>
+              <input type="text" class="form-control" id="address" name='address' placeholder="1234 Main St" required
+                style="width: 40%;" />
+            </div>
+          </div>
+
+          <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
+            onclick="submitReqMember()">가입하기</button>
+        </form>
+
       </div>
-    </main>
+    </div>
+  </main>
 
-  </div>
-</body>
-
-</html>
+</div>
+{% load static %}
+<script src="{% static 'polls/signup.js' %}"></script>
+{% endblock %}

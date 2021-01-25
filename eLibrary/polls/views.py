@@ -1,21 +1,19 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
-from django.views import generic
-from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib import auth
-from .models import UserInfo
-from django.template import loader
+from .models import UserInfo, Book
 
 # Create your views here.
 INIT = '0'
 SUCCESS = '1'
 FAIL = '2'
+books = Book.objects.all()
 
 def index(request):
-    context = {'stat': INIT}
+    context = {'stat': INIT, 'books': books}
     return render(request, 'polls/index.html', context)
 
 def login(request):
@@ -24,12 +22,13 @@ def login(request):
 
 def signin(request):
     email = request.POST['email']
+    print(email)
     pw = request.POST['password']
 
     try:
         user = UserInfo.objects.get(email=email)
         if user.password == pw:
-            context = {'stat': SUCCESS, 'name': user.firstname, 'email': user.email}
+            context = {'stat': SUCCESS, 'firstname': user.firstname, 'usermail': user.email, 'books':books}
             return render(request, 'polls/index.html', context)
 
         else:
@@ -73,7 +72,7 @@ def updateinfo(request):
     firstname = request.GET['firstname']
     user = UserInfo.objects.get(email=email)
     context = {
-        'email': email,
+        'usermail': email,
         'firstname': firstname,
         'lastname': user.lastname,
         'address': user.address
@@ -95,14 +94,14 @@ def requpdate(request):
     if address: user.address = address
     user.save()
 
-    context = {'stat': SUCCESS,'name': user.firstname, 'email': user.email}
+    context = {'stat': SUCCESS,'firstname': user.firstname, 'usermail': user.email}
 
     return render(request, 'polls/index.html', context=context)
 
 def deleteinfo(request):
     email = request.GET['email']
     firstname = request.GET['firstname']
-    context = {'stat': INIT, 'email': email, 'firstname': firstname}
+    context = {'stat': INIT, 'usermail': email, 'firstname': firstname}
     return render(request, 'polls/deleteinfo.html', context)
     
 def reqdelete(request):
@@ -112,9 +111,9 @@ def reqdelete(request):
     user = UserInfo.objects.get(email=email)
 
     if user.password != pw:
-        context = {'stat': FAIL, 'msg': '비밀번호가 틀렸습니다.', 'firstname':firstname, 'email':email}
+        context = {'stat': FAIL, 'msg': '비밀번호가 틀렸습니다.', 'firstname':firstname, 'usermail':email}
         return render(request, 'polls/deleteinfo.html', context)
-        
+          
     auth.logout(request)
     user.delete()
     context = {'stat': SUCCESS, 'firstname': firstname}

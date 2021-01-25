@@ -1,116 +1,72 @@
-<!doctype html>
-<html lang="en">
+{% extends './base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>회원정보</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+{% block content %}
+<div class='container-fluid'>
+    <main>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+                    <span class='navbar-brand'>회원정보</span>
+                </div>
 
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
-
-    <script>
-        function submitReqDelete() {
-            let email = "{{email}}";
-            let firstname = "{{firstname}}";
-            let form = document.getElementById('forms');
-            form.setAttribute('action', './reqdelete');
-            form.setAttribute('method', 'post');
-
-            let hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute('name', 'email');
-            hiddenField.setAttribute('value', email);
-            form.appendChild(hiddenField);
-
-            hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute('name', 'firstname');
-            hiddenField.setAttribute('value', firstname);
-            form.appendChild(hiddenField);
-            form.submit();
-        }
-
-        function submitIndex() {
-            let form = document.getElementById('forms');
-            form.setAttribute('action', './');
-            form.setAttribute('method', 'get');
-            form.submit();
-        }
-    </script>
-</head>
-
-<body class="bg-light">
-
-    <div class='container-fluid'>
-        <main>
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
-                        <span class='navbar-brand'>회원정보</span>
-                    </div>
-
-                    <div style="float: right;">
-                        <form method="post"> {% csrf_token %}
-                            {% if stat != '1' %}
-                            <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{email}})</span>
-                            <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
-
-                            {% else %}
-                            <button type="submit" formaction="./login" class="btn btn-success">로그인</button>
-                            <button type="submit" formaction="./signup" class="btn btn-success">회원가입</button>
-                            {% endif %}
-                        </form>
-                    </div>
-            </nav>
-
-            <div class='row'>
-                <div>
-                    <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
-
-                        <div style="margin-top: 80px; ">
-                            {% if stat != '1' %}
-                            <span style="font-size: 50px;">{{firstname}}님의 회원정보</span>
-                            {% endif %}
-                        </div>
-
-                        <div style="margin-top: 1%;">
-                            {% if stat == '0' %}
-                            <label for="password" class="form-label">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
-                            {% elif stat == '2' %}
-                            <label for="password" style="color: red;" class="form-label">{{msg}}</label>
-                            {% endif %}
-
-                            {% if stat != '1' %}
-                            <input type="password" class="form-control" id="password" name='password' placeholder=""
-                                value="" required style="width: 30%;">
-                            {% else %}
-                            <div>
-                                <span style="font-size: 50px; text-align: center;">{{firstname}}님의 회원탈퇴를 완료하였습니다.</span>
-                                <br/>
-                                <br/>
-                                <span style="font-size: 30px; text-align: center;">그 동안 전자도서관 서비스를 이용해주셔서 감사합니다.</span>
-                            </div>
-                            {% endif %}
-                        </div>
-
+                <div style="float: right;">
+                    <form method="post"> {% csrf_token %}
                         {% if stat != '1' %}
-                        <button type='submit' class="w-100 btn btn-primary btn-lg"
-                            style="margin-top: 8%; margin-left: 25%;" onclick="submitReqDelete()">탈퇴하기</button>
+                        <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{usermail}})</span>
+                        <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
 
                         {% else %}
-                        <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
-                            onclick="submitIndex()"> 돌아가기</button>
+                        <button type="submit" formaction="./login" class="btn btn-success">로그인</button>
+                        <button type="submit" formaction="./signup" class="btn btn-success">회원가입</button>
                         {% endif %}
                     </form>
                 </div>
-            </div>
-        </main>
-    </div>
-</body>
+        </nav>
 
-</html>
+        <div class='row'>
+            <div>
+                <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
+
+                    <div style="margin-top: 80px; ">
+                        {% if stat != '1' %}
+                        <span style="font-size: 50px;">{{firstname}}님의 회원정보</span>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-top: 1%;">
+                        {% if stat == '0' %}
+                        <label for="password" class="form-label">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
+                        {% elif stat == '2' %}
+                        <label for="password" style="color: red;" class="form-label">{{msg}}</label>
+                        {% endif %}
+
+                        {% if stat != '1' %}
+                        <input type="password" class="form-control" id="password" name='password' placeholder=""
+                            value="" required style="width: 30%;">
+                        {% else %}
+                        <div>
+                            <span style="font-size: 50px; text-align: center;">{{firstname}}님의 회원탈퇴를 완료하였습니다.</span>
+                            <br />
+                            <br />
+                            <span style="font-size: 30px; text-align: center;">그 동안 전자도서관 서비스를 이용해주셔서 감사합니다.</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if stat != '1' %}
+                    <button type='submit' class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
+                        onclick="submitReqDelete('{{firstname}}', '{{usermail}}')">탈퇴하기</button>
+
+                    {% else %}
+                    <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
+                        onclick="submitIndex()"> 돌아가기</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% load static %}
+<script src="{% static 'polls/deleteinfo.js' %}"></script>
+{% endblock %}

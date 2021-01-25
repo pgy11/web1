@@ -1,133 +1,65 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>회원정보</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
-
-    <script>
-        function submitReqUpdate() {
-            let pw = document.getElementById('password');
-            let cpw = document.getElementById('cpassword');
-
-            if (pw.value == cpw.value) {
-                let form = document.getElementById('forms');
-                form.setAttribute('method', 'POST');
-                form.setAttribute('action', './requpdate')
-
-                hiddenField = document.createElement('input');
-                hiddenField.setAttribute('type', 'hidden');
-                hiddenField.setAttribute('name', 'email');
-                hiddenField.setAttribute('value', "{{email}}");
-                form.appendChild(hiddenField);
-                form.submit();
-                alert('회원정보 수정완료 하였습니다.');
-            }
-            else{
-                alert('비밀번호가 일치하지 않습니다.');
-            }
-
-        }
-
-        function submitDeleteInfo() {
-            let email = "{{email}}";
-            let firstname = "{{firstname}}";
-
-            let form = document.createElement('form');
-            form.setAttribute('method', 'GET{% csrf_token %}');
-            form.setAttribute('action', './deleteinfo');
-
-            let hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute("name", "email");
-            hiddenField.setAttribute("value", email);
-            form.appendChild(hiddenField);
-
-            hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute("name", "firstname");
-            hiddenField.setAttribute("value", firstname);
-            form.appendChild(hiddenField);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-    </script>
-
-</head>
-
-<body class="bg-light">
-
-    <div class='container-fluid'>
-        <main>
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
-                        <span class='navbar-brand'>회원정보</span>
-                    </div>
-
-                    <div style="float: right;">
-                        <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{email}})</span>
-                        <button onclick="submitDeleteInfo()" class='btn btn-success'>회원탈퇴</button>
-                    </div>
-            </nav>
-
-            <div class='row'>
-                <div>
-                    <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
-
-                        <div style="margin-top: 80px; ">
-                            <span style="font-size: 50px;">{{firstname}}님의 회원정보 수정</span>
-                        </div>
-
-                        <div>
-                            <div style="margin-top: 5%;">
-                                <label for="firstName" class="form-label">First name</label>
-                                <input type="text" class="form-control" id="firstname" name='firstname'
-                                    placeholder="{{firstname}}" value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="lastName" class="form-label">Last name</label>
-                                <input type="text" class="form-control" id="lastName" name='lastname'
-                                    placeholder="{{lastname}}" value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name='password' placeholder=""
-                                    value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="password" class="form-label">Check password</label>
-                                <input type="password" class="form-control" id="cpassword" name='cpassword'
-                                    placeholder="" value="" required style="width: 30%;">
-                            </div>
-
-                            <div style="margin-top: 1%;">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" name='address'
-                                    placeholder="{{address}}" required style="width: 60%;">
-                            </div>
-                        </div>
-
-                        <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
-                            onclick="submitReqUpdate()">수정하기</button>
-                    </form>
-                </div>
+{% extends './base.html' %}
+{% block content %}
+<div class='container-fluid'>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+                <span class='navbar-brand'>회원정보</span>
             </div>
-        </main>
 
+            <div style="float: right;">
+                <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{usermail}})</span>
+                <button onclick="submitDeleteInfo('{{firstname}}', '{{usermail}}')" class='btn btn-success'>회원탈퇴</button>
+            </div>
+    </nav>
+
+    <div class='row'>
+        <div>
+            <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
+
+                <div style="margin-top: 80px; ">
+                    <span style="font-size: 50px;">{{firstname}}님의 회원정보 수정</span>
+                </div>
+
+                <div>
+                    <div style="margin-top: 5%;">
+                        <label for="firstName" class="form-label">First name</label>
+                        <input type="text" class="form-control" id="firstname" name='firstname'
+                            placeholder="{{firstname}}" value="" required style="width: 30%;">
+                    </div>
+
+                    <div style="margin-top: 1%;">
+                        <label for="lastName" class="form-label">Last name</label>
+                        <input type="text" class="form-control" id="lastName" name='lastname' placeholder="{{lastname}}"
+                            value="" required style="width: 30%;">
+                    </div>
+
+                    <div style="margin-top: 1%;">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name='password' placeholder=""
+                            value="" required style="width: 30%;">
+                    </div>
+
+                    <div style="margin-top: 1%;">
+                        <label for="password" class="form-label">Check password</label>
+                        <input type="password" class="form-control" id="cpassword" name='cpassword' placeholder=""
+                            value="" required style="width: 30%;">
+                    </div>
+
+                    <div style="margin-top: 1%;">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name='address' placeholder="{{address}}"
+                            required style="width: 60%;">
+                    </div>
+                </div>
+
+                <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
+                    onclick="submitReqUpdate('{{usermail}}')">수정하기</button>
+            </form>
+        </div>
     </div>
-</body>
-
-</html>
+</div>
+{% load static %}
+<script src="{% static 'polls/updateinfo.js' %}"></script>
+{% endblock %}

@@ -24,5 +24,3 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     path('', RedirectView.as_view(url='polls/', permanent=False))
 ]
-
-#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
