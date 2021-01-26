@@ -1,19 +1,21 @@
 {% extends './base.html' %}
 
 {% block content %}
-<div class='container-fluid'>
+<div class='container'>
     <main>
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+                    <a class="navbar-brand" href="{% url 'index' %}" style="color: aliceblue;">전자 도서관</a>
                     <span class='navbar-brand'>회원정보</span>
                 </div>
 
                 <div style="float: right;">
                     <form method="post"> {% csrf_token %}
-                        {% if stat != '1' %}
-                        <span style="color: aliceblue; font-size: 18px;">{{firstname}}({{usermail}})</span>
+                        {% if request.session.email %}
+                        <span style="color: aliceblue; font-size: 18px;">
+                            {{request.session.firstname}}({{request.session.email}})
+                        </span>
                         <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
 
                         {% else %}
@@ -26,39 +28,39 @@
 
         <div class='row'>
             <div>
-                <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
-
+                <form id='forms' class="needs-validation" novalidate style="margin-left: 35%; margin-top: 20%;">{% csrf_token %}
                     <div style="margin-top: 80px; ">
-                        {% if stat != '1' %}
-                        <span style="font-size: 50px;">{{firstname}}님의 회원정보</span>
+                        {% if request.session.email  %}
+                        <span style="font-size: 50px;">{{request.session.firstname}}님의 회원정보</span>
                         {% endif %}
                     </div>
 
-                    <div style="margin-top: 1%;">
-                        {% if stat == '0' %}
-                        <label for="password" class="form-label">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
-                        {% elif stat == '2' %}
-                        <label for="password" style="color: red;" class="form-label">{{msg}}</label>
-                        {% endif %}
+                    <div style="margin-top: 1%; margin-left: 7%;">
+                            {% if request.session.email  %}
+                            <label for="password" class="form-label text-center">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
+                            {% elif stat == '2' %}
+                            <label for="password" style="color: red;" class="form-label">{{msg}}</label>
+                            {% endif %}
 
-                        {% if stat != '1' %}
-                        <input type="password" class="form-control" id="password" name='password' placeholder=""
-                            value="" required style="width: 30%;">
-                        {% else %}
-                        <div>
-                            <span style="font-size: 50px; text-align: center;">{{firstname}}님의 회원탈퇴를 완료하였습니다.</span>
-                            <br />
-                            <br />
-                            <span style="font-size: 30px; text-align: center;">그 동안 전자도서관 서비스를 이용해주셔서 감사합니다.</span>
-                        </div>
-                        {% endif %}
+                            {% if request.session.email %}
+                            <input type="password" class="form-control" id="password" name='password' placeholder=""
+                                value="" required style="width: 30%;">
+                            {% else %}
+                            <div style="margin-right: 25%;">
+                                <p style="font-size: 50px;">
+                                    {{firstname}}님의 회원탈퇴를 완료하였습니다.
+                                </p>
+                                <br>
+                                <p style="font-size: 30px;">그 동안 전자도서관 서비스를 이용해주셔서 감사합니다.</p>
+                            </div>
+                            {% endif %}
                     </div>
 
-                    {% if stat != '1' %}
-                    <button type='submit' class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
+                    {% if request.session.email  %}
+                    <button type='submit' class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 15%;"
                         onclick="submitReqDelete('{{firstname}}', '{{usermail}}')">탈퇴하기</button>
 
-                    {% else %}
+                    {% elif stat == '1' or not request.session.email%}
                     <button class="w-100 btn btn-primary btn-lg" style="margin-top: 8%; margin-left: 25%;"
                         onclick="submitIndex()"> 돌아가기</button>
                     {% endif %}

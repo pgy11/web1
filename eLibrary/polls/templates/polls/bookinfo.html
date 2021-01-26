@@ -1,0 +1,62 @@
+{% extends './base.html' %}
+{% block content %}
+ <!-- Navigation -->
+ <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+      <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'index' %}" style="color: aliceblue;">전자 도서관</a>
+          <span class='navbar-brand'>회원정보</span>
+      </div>
+
+      <div style="float: right;">
+          <form method="post"> {% csrf_token %}
+              {% if request.session.email %}
+              <span style="color: aliceblue; font-size: 18px;">
+                  {{request.session.firstname}}({{request.session.email}})
+              </span>
+              <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
+
+              {% else %}
+              <button type="submit" formaction="./login" class="btn btn-success">로그인</button>
+              <button type="submit" formaction="./signup" class="btn btn-success">회원가입</button>
+              {% endif %}
+          </form>
+      </div>
+</nav>
+  <hr>
+  <!-- Page Content -->
+  <div class="container" style="margin-top: 3%;">
+
+    <div class="row">
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+
+        <div class="card mt-4">
+          <img class="card-img-top img-fluid img-rounded" src="{{book.image_URL}}" alt="">
+          <div class="card-body">
+            <h3 class="card-title">{{book.title}}</h3>
+            <h4 class="card-text" style="margin-top: 3%;">{{book.author}}</h4>
+            <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
+            {{book.rating}} stars
+          </div>
+        </div>
+        <!-- /.card -->
+        <hr>
+        <div class="card card-outline-secondary my-4">
+          <div class="card-header">
+            <h3>Description<h3>
+          </div>
+          <div class="card-body">
+            <p>{{book.desc}}</p>
+            <hr>
+            <a href="#" class="btn btn-success">읽기</a>
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col-lg-9 -->
+    </div>
+  </div>
+  <!-- /.container -->
+{% endblock %}

@@ -4,7 +4,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+                <a class="navbar-brand" href="{% url 'index' %}" style="color: aliceblue;">전자 도서관</a>
                 <span class='navbar-brand'>회원정보</span>
             </div>
 
@@ -16,7 +16,7 @@
 
     <div class='row'>
         <div>
-            <form id='forms' class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
+            <form id='forms' onsubmit="return false;" class="needs-validation" novalidate style="margin-left: 30%; margin-top: 3%;">{% csrf_token %}
 
                 <div style="margin-top: 80px; ">
                     <span style="font-size: 50px;">{{firstname}}님의 회원정보 수정</span>

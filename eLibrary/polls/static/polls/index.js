@@ -20,6 +20,17 @@ function reqUpdate(firstname, email) {
     form.submit();
 }
 
-function onClickImg(){
+function clickImage(src){
+    let form = document.createElement('form');
+    form.setAttribute('method', 'GET{{ csrf_token }}');
+    form.setAttribute('action', './bookinfo');
+
+    let hiddenField = document.createElement('input');
+    hiddenField.setAttribute('type', 'hidden');
+    hiddenField.setAttribute('name', 'imgurl');
+    hiddenField.setAttribute('value', src);
+    form.appendChild(hiddenField);
     
+    document.body.appendChild(form);
+    form.submit();
 }

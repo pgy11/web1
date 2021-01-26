@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib import auth
+from django.contrib.auth import authenticate
 from .models import UserInfo, Book
 
 # Create your views here.
@@ -13,7 +14,7 @@ FAIL = '2'
 books = Book.objects.all()
 
 def index(request):
-    context = {'stat': INIT, 'books': books}
+    context = {'books': books}
     return render(request, 'polls/index.html', context)
 
 def login(request):
@@ -21,25 +22,26 @@ def login(request):
     return render(request, 'polls/login.html', context=context)
 
 def signin(request):
-    email = request.POST['email']
-    print(email)
-    pw = request.POST['password']
+    if 'email' in request.session.keys():
+        return HttpResponseRedirect(reverse('index'))
 
+    email = request.POST['email']
+    pw = request.POST['password']
     try:
         user = UserInfo.objects.get(email=email)
         if user.password == pw:
-            context = {'stat': SUCCESS, 'firstname': user.firstname, 'usermail': user.email, 'books':books}
-            return render(request, 'polls/index.html', context)
-
-        else:
-            context = {'msg': '이메일 또는 비밀번호를 올바르게 입력하세요.'} 
-            return render(request, 'polls/login.html', context=context)
+            request.session['email'] = user.email
+            request.session['firstname'] = user.firstname
+            return HttpResponseRedirect(reverse('index'))
+        
+        else: 
+            return render(request, 'polls/login.html', {'msg': 'ID 또는 비밀번호가 틀렸습니다.'})
 
     except:
-        context = {'msg': '이메일 또는 비밀번호를 올바르게 입력하세요.'} 
-        return render(request, 'polls/login.html', context=context)
+        return render(request, 'polls/login.html', {'msg': 'ID 또는 비밀번호가 틀렸습니다.'})
+    
 
-def signup(request):  
+def signup(request):
     return render(request, 'polls/signup.html')
 
 def checkmail(request):
@@ -55,6 +57,12 @@ def signout(request):
     return HttpResponseRedirect(reverse('index'))
 
 def reqmember(request):
+    """
+    msg = check_signup(request)
+    if msg != 'valid':
+        url = '<script>alert(msg);</script>'
+        return HttpResponse(url)
+    """
     firstname = request.POST['firstname']
     lastname = request.POST['lastname']
     email = request.POST['email']
@@ -62,24 +70,34 @@ def reqmember(request):
     address = request.POST['address']
 
     newuser = UserInfo(firstname=firstname, lastname=lastname, email=email,
-     password=pw, address=address)
+    password=pw, address=address)
     newuser.save()
-
     return HttpResponseRedirect(reverse('index'))
+    
 
 def updateinfo(request):
+    if 'email' not in request.session.keys():
+        return HttpResponseRedirect(reverse('login'))
+
     email = request.GET['email']
     firstname = request.GET['firstname']
-    user = UserInfo.objects.get(email=email)
-    context = {
-        'usermail': email,
-        'firstname': firstname,
-        'lastname': user.lastname,
-        'address': user.address
-    }
-    return render(request, 'polls/updateinfo.html', context=context)
+    try:
+        user = UserInfo.objects.get(email=email)
+        context = {
+            'usermail': email,
+            'firstname': firstname,
+            'lastname': user.lastname,
+            'address': user.address
+        }
+        return render(request, 'polls/updateinfo.html', context=context)
+    
+    except:
+        return HttpResponseRedirect(reverse('index'))
 
 def requpdate(request):
+    if 'email' not in request.session.keys():
+        return HttpResponseRedirect(reverse('login'))
+
     email = request.POST['email']
     firstname = request.POST['firstname'].rstrip()
     lastname = request.POST['lastname'].rstrip()
@@ -94,17 +112,21 @@ def requpdate(request):
     if address: user.address = address
     user.save()
 
-    context = {'stat': SUCCESS,'firstname': user.firstname, 'usermail': user.email}
-
-    return render(request, 'polls/index.html', context=context)
+    return HttpResponseRedirect(reverse('index'))
 
 def deleteinfo(request):
+    if 'email' not in request.session.keys():
+        return HttpResponseRedirect(reverse('login'))
+
     email = request.GET['email']
     firstname = request.GET['firstname']
     context = {'stat': INIT, 'usermail': email, 'firstname': firstname}
     return render(request, 'polls/deleteinfo.html', context)
     
 def reqdelete(request):
+    if 'email' not in request.session.keys():
+        return HttpResponseRedirect(reverse('login'))
+
     email = request.POST['email']
     pw = request.POST['password']
     firstname = request.POST['firstname']
@@ -118,3 +140,37 @@ def reqdelete(request):
     user.delete()
     context = {'stat': SUCCESS, 'firstname': firstname}
     return render(request, 'polls/deleteinfo.html', context)
+
+def bookinfo(request):
+    if 'email' not in request.session.keys():
+        return HttpResponseRedirect(reverse('login'))
+
+    imgurl = request.GET['imgurl']
+    try:
+        book = Book.objects.get(image_URL=imgurl)
+        return render(request, 'polls/bookinfo.html', context={'book': book})
+    except:
+        pass
+
+"""
+def check_signup(request):
+    firstname = request.POST['firstname']
+    lastname = request.POST['lastname']
+    email = request.POST['email']
+    pw = request.POST['password']
+    cpw = request.POST['cpassword']
+    address = request.POST['address']
+
+    if not firstname or not lastname: return '이름을 입력하세요'
+    if not email: return '이메일을 입력하세요'
+    if not pw: return '비밀번호를 입력하세요'
+    if pw != cpw: return '비밀번호가 서로 맞지 않습니다.'
+    if not address: return '주소를 입력하세요.'
+    if '@' not in email: return '이메일 형식이 올바르지 않습니다.'
+
+    try:
+        user = UserInfo.objects.get(email=email)
+        return '이미 존재하는 이메일입니다.'
+    except:
+        return 'valid'
+"""

@@ -4,18 +4,13 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-        aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#" style="color: aliceblue;">전자 도서관</a>
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'index' %}" style="color: aliceblue;">전자 도서관</a>
+      </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <form class="navbar-form navbar-right" method="POST"> {% csrf_token %}
-        {% if stat == '0' %}
+        {% if not request.session.email %}
         <div class="form-group">
           <input type="text" id='email' name='email' placeholder="E-mail" class="form-control" />
         </div>
@@ -29,7 +24,10 @@
         {% else %}
         <div>
           <span style="color: aliceblue; font-size: 18px; cursor: pointer;"
-            onclick='reqUpdate("{{firstname}}", "{{usermail}}")'>{{firstname}}({{usermail}})</span>
+            onclick='reqUpdate("{{request.session.firstname}}", "{{request.session.email}}")'>
+            {{request.session.firstname}}({{request.session.email}})
+          </span>
+
           <button type='submit' formaction="./signout" class='btn btn-success'>로그아웃</button>
         </div>
         {% endif %}
@@ -43,6 +41,7 @@
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron main-df">
   <div class="container">
+
   </div>
 </div>
 
@@ -53,36 +52,14 @@
   <div class="row" style="margin-top: 2%;">
     {% endif %}
     <div class="col-md-2">
-      <img src='{{info.image_URL}}' class='img-rounded' style="width: 200px; height: 300px; margin-bottom: 5%; cursor: pointer;"
-        data-toggle="modal" data-target="#exampleModalCenter" />
+      <img src='{{info.image_URL}}' id='cover{{forloop.counter}}' name='cover' class='img-rounded'
+        style="width: 200px; height: 300px; margin-bottom: 5%; cursor: pointer;"
+        onclick="clickImage('{{info.image_URL}}')" />
     </div>
     {% if forloop.counter|divisibleby:6 %}
   </div>
   {% endif %}
   {% endfor %}
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div> <!-- /container -->
 {% load static %}
 <script src="{% static 'polls/index.js' %}"></script>

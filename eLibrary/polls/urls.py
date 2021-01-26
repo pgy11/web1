@@ -12,5 +12,6 @@ urlpatterns = [
     path('requpdate', views.requpdate, name='requpdate'),
     path('deleteinfo', views.deleteinfo, name='deleteinfo'),
     path('reqdelete', views.reqdelete, name='reqdelete'),
-    path('checkmail', views.checkmail, name='checkmail')
+    path('checkmail', views.checkmail, name='checkmail'),
+    path('bookinfo', views.bookinfo, name='bookinfo'),
 ]
