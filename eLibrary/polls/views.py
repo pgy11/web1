@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.contrib.auth import authenticate
 from .models import UserInfo, Book
 
@@ -44,37 +44,48 @@ def signin(request):
 def signup(request):
     return render(request, 'polls/signup.html')
 
-def checkmail(request):
-    email = request.POST['email']
-    try:
-        _ = UserInfo.objects.get(email=email)
-        return render(request, 'polls/signup.html',{'msg': 'not available'})
-    except:
-        return render(request, 'polls/signup.html',{'msg': 'available'})
-
 def signout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
 
 def reqmember(request):
-    """
+
     msg = check_signup(request)
     if msg != 'valid':
-        url = '<script>alert(msg);</script>'
-        return HttpResponse(url)
-    """
+        messages.add_message(request, messages.ERROR, msg)
+        return render(request, 'polls/signup.html')
+
     firstname = request.POST['firstname']
     lastname = request.POST['lastname']
     email = request.POST['email']
     pw = request.POST['password']
     address = request.POST['address']
+    phonenumber = request.POST['phonenumber']
 
     newuser = UserInfo(firstname=firstname, lastname=lastname, email=email,
-    password=pw, address=address)
+    password=pw, address=address, phonenumber=phonenumber)
     newuser.save()
-    return HttpResponseRedirect(reverse('index'))
+
+    messages.add_message(request, messages.SUCCESS, '회원가입에 성공하였습니다.')
+    return render(request, 'polls/signup.html')
     
 
+def searchmem(request):
+    return render(request, 'polls/searchmem.html')
+
+def retrievemem(request):
+    phonenumber = request.POST['phonenumber']
+    try:
+        user = UserInfo.objects.get(phonenumber=phonenumber)
+        messages.add_message(request, messages.SUCCESS, 'success')
+        context = {'usermail': user.email, 'password': user.password}
+        return render(request, 'polls/searchmem.html', context)
+    
+    except:
+        messages.add_message(request, messages.ERROR, '없는 전화번호입니다.')
+        return render(request, 'polls/searchmem.html')
+    
+        
 def updateinfo(request):
     if 'email' not in request.session.keys():
         return HttpResponseRedirect(reverse('login'))
@@ -152,7 +163,7 @@ def bookinfo(request):
     except:
         pass
 
-"""
+
 def check_signup(request):
     firstname = request.POST['firstname']
     lastname = request.POST['lastname']
@@ -160,6 +171,7 @@ def check_signup(request):
     pw = request.POST['password']
     cpw = request.POST['cpassword']
     address = request.POST['address']
+    phonenumber = request.POST['phonenumber']
 
     if not firstname or not lastname: return '이름을 입력하세요'
     if not email: return '이메일을 입력하세요'
@@ -167,10 +179,12 @@ def check_signup(request):
     if pw != cpw: return '비밀번호가 서로 맞지 않습니다.'
     if not address: return '주소를 입력하세요.'
     if '@' not in email: return '이메일 형식이 올바르지 않습니다.'
+    if not phonenumber: return '전화번호를 입력하세요.'
+    if '-' in phonenumber: return '-없이 전화번호를 입력하세요.'
+    if not str.isdigit(phonenumber): return '숫자를 입력하세요'
 
     try:
-        user = UserInfo.objects.get(email=email)
+        _ = UserInfo.objects.get(email=email)
         return '이미 존재하는 이메일입니다.'
     except:
         return 'valid'
-"""
