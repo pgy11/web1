@@ -152,6 +152,17 @@ def reqdelete(request):
     context = {'stat': SUCCESS, 'firstname': firstname}
     return render(request, 'polls/deleteinfo.html', context)
 
+def searchbook(request):
+    bookinfo = request.GET['searchbook']
+    search_books = Book.objects.filter(title__icontains=bookinfo)
+
+    if not search_books.exists():
+        messages.add_message(request, messages.ERROR, '검색한 책은 없는 정보입니다.')
+        return render(request, 'polls/index.html', {'books': books})
+    
+    return render(request, 'polls/index.html', {'books': search_books})
+    
+
 def bookinfo(request):
     if 'email' not in request.session.keys():
         return HttpResponseRedirect(reverse('login'))

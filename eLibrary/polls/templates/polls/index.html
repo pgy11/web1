@@ -40,8 +40,9 @@
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron main-df">
-  <div class="container">
-
+  <div class='main-search-div'>
+      <input id='searchBook' name='searchbook' type='text' placeholder="책을 검색합니다." class='main-search-input'>
+      <button class="main-search-button" onclick="clickSearchBtn()">검색</button>
   </div>
 </div>
 
@@ -61,6 +62,13 @@
   {% endif %}
   {% endfor %}
 </div> <!-- /container -->
+
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{message.message}}')</script>
+  {% endfor %}
+{% endif %}
+
 {% load static %}
 <script src="{% static 'polls/index.js' %}"></script>
 {% endblock %}

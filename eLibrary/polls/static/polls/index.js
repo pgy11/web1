@@ -34,3 +34,16 @@ function clickImage(src){
     document.body.appendChild(form);
     form.submit();
 }
+
+function clickSearchBtn(){
+    let input = document.getElementById('searchBook');
+    if(input.value == '') return;
+
+    let form = document.createElement('form');
+    form.setAttribute('method', 'get');
+    form.setAttribute('action', './searchbook');
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}

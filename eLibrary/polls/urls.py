@@ -15,4 +15,5 @@ urlpatterns = [
     path('bookinfo', views.bookinfo, name='bookinfo'),
     path('searchmem', views.searchmem, name='searchmem'),
     path('retrievemem', views.retrievemem, name='retrievemem'),
+    path('searchbook', views.searchbook, name='searchbook')
 ]

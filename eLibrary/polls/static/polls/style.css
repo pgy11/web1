@@ -41,3 +41,34 @@
     width: 40%;
     margin-left: 60%;
 }
+
+.main-search-div{
+    height: 40px;
+    width: 30%;
+    top: 90%;
+    left: 33%;
+    border: 1px solid #1b5ac2;
+    background: #ffffff;
+    position: relative;
+}
+
+.main-search-input{
+    font-size: 16px;
+    height: 100%;
+    width: 90%;
+    padding: 10px;
+    border: 0px;
+    outline: none;
+    float: left;
+}
+
+.main-search-button{
+    width: 10%;
+    height: 100%;
+    border: 0px;
+    background: #1b5ac2;
+    outline: none;
+    float: right;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
