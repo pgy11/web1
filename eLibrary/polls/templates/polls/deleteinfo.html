@@ -38,7 +38,9 @@
                     <div style="margin-top: 1%; margin-left: 7%;">
                             {% if request.session.email  %}
                             <label for="password" class="form-label text-center">회원탈퇴를 위해 비밀번호를 입력하세요.</label>
-                            {% elif stat == '2' %}
+                            {% endif %}
+                            {% if stat == '2' %}
+                            <br/>
                             <label for="password" style="color: red;" class="form-label">{{msg}}</label>
                             {% endif %}
 

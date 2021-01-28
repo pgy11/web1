@@ -117,7 +117,9 @@ def requpdate(request):
     
     user = UserInfo.objects.get(email=email)
 
-    if firstname: user.firstname = firstname
+    if firstname: 
+        user.firstname = firstname
+        request.session['firstname'] = firstname
     if lastname: user.lastname = lastname
     if password: user.password = password
     if address: user.address = address
